@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFind | Premium Lost & Found Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <!-- Navigation (Landing Page Only) -->
+    <nav id="navbar">
+        <a href="#" class="logo" onclick="showSection('landing')">
+            <i class="fas fa-search-location"></i> EduFind
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#" onclick="showSection('login')" class="btn btn-outline">Login</a></li>
+            <li><a href="#" onclick="showSection('login')" class="btn btn-primary">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <main id="landing-section">
+        <section id="hero" class="hero">
+            <div class="hero-visual" aria-hidden="true">
+                <div class="campus-grid"></div>
+                <div class="floating-card card-lost">
+                    <span class="status-dot lost"></span>
+                    <div>
+                        <strong>Lost ID Card</strong>
+                        <small>Library - 8 min ago</small>
+                    </div>
+                </div>
+                <div class="floating-card card-found">
+                    <span class="status-dot found"></span>
+                    <div>
+                        <strong>Found Backpack</strong>
+                        <small>Student Center - Ready to claim</small>
+                    </div>
+                </div>
+                <div class="hero-device">
+                    <div class="device-header">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="device-toolbar">
+                        <div>
+                            <small>EduFind Dashboard</small>
+                            <strong>Recovery Queue</strong>
+                        </div>
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="device-list">
+                        <div class="device-row active">
+                            <i class="fas fa-wallet"></i>
+                            <div><strong>Wallet</strong><small>Matched with 2 claims</small></div>
+                            <span>Found</span>
+                        </div>
+                        <div class="device-row">
+                            <i class="fas fa-key"></i>
+                            <div><strong>Keys</strong><small>Awaiting owner proof</small></div>
+                            <span>Review</span>
+                        </div>
+                        <div class="device-row">
+                            <i class="fas fa-laptop"></i>
+                            <div><strong>Laptop</strong><small>Claim approved</small></div>
+                            <span>Return</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">Campus Lost & Found Management</p>
+                <h1 class="hero-title">EduFind</h1>
+                <p class="hero-subtitle">Report missing items, verify claims, and return belongings through one organized system built for students, staff, and administrators.</p>
+                <div class="hero-btns">
+                    <button onclick="showSection('login')" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Get Started</button>
+                    <button onclick="scrollToSection('features')" class="btn btn-outline"><i class="fas fa-layer-group"></i> View Features</button>
+                </div>
+                <div class="hero-stats" aria-label="EduFind highlights">
+                    <div><strong>24/7</strong><span>Item reporting</span></div>
+                    <div><strong>3-step</strong><span>Claim review</span></div>
+                    <div><strong>Secure</strong><span>User verification</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="landing-section features">
+            <div class="section-heading">
+                <p>What EduFind Handles</p>
+                <h2>Everything needed to move an item from reported to returned.</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3>Report Lost Items</h3>
+                    <p>Capture item details, location, date, category, and photo evidence in a focused report flow.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h3>Claim Found Items</h3>
+                    <p>Let owners submit claims while staff keep proof checks and item status in one place.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tasks"></i>
+                    <h3>Track Status</h3>
+                    <p>Follow lost, found, pending, approved, and claimed items with clear dashboard states.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Secure Verification</h3>
+                    <p>Restrict sensitive actions to authenticated users and staff-managed claim decisions.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section workflow">
+            <div class="section-heading compact">
+                <p>Workflow</p>
+                <h2>A simpler return process for campus teams.</h2>
+            </div>
+            <div class="workflow-steps">
+                <div><span>01</span><strong>Submit</strong><p>Students and staff report lost or found items with the details that matter.</p></div>
+                <div><span>02</span><strong>Review</strong><p>Staff compare claims, check proof, and update item status from the dashboard.</p></div>
+                <div><span>03</span><strong>Return</strong><p>Owners receive updates and coordinate pickup once the claim is approved.</p></div>
+            </div>
+        </section>
+
+        <section class="landing-cta">
+            <div>
+                <p>Ready for your institution</p>
+                <h2>Start organizing lost and found reports today.</h2>
+            </div>
+            <button onclick="showSection('login')" class="btn btn-primary"><i class="fas fa-right-to-bracket"></i> Sign In</button>
+        </section>
+
+        <footer class="landing-footer">
+            <div class="footer-row">
+                <div class="logo">
+                    <i class="fas fa-search-location"></i> EduFind
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+            <p class="text-center">&copy; 2026 EduFind. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- Login/Signup Section -->
+    <section id="login-section" class="hidden login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-search-location"></i> EduFind
+                </div>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to your EduFind account</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="login-input-group">
+                    <i class="fas fa-envelope login-input-icon"></i>
+                    <input type="email" id="login-email" class="login-input" placeholder="Email Address" required>
+                </div>
+                <div class="login-input-group">
+                    <i class="fas fa-lock login-input-icon"></i>
+                    <input type="password" id="login-password" class="login-input" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-button">Sign In</button>
+                <button type="button" onclick="toggleAuth('forgot')" class="btn btn-outline" style="width: 100%; border-radius: 14px; margin-top: 12px;">Forgot Password?</button>
+            </form>
+
+            <div id="signup-form" class="hidden text-center" style="margin-top: 30px;">
+                <h2 class="login-title" style="font-size: 1.5rem;">Registration</h2>
+                <p style="color: var(--text-secondary); margin: 16px 0 24px;">Registration is handled by staff or administrators. Please contact your institution's help desk to create an account.</p>
+                <button onclick="toggleAuth('login')" class="btn btn-outline" style="width: 100%; border-radius: 14px;">Back to Login</button>
+            </div>
+
+            <form id="forgot-password-form" class="hidden login-form" style="margin-top: 30px;">
+                <h2 class="login-title" style="font-size: 1.5rem;">Reset Password</h2>
+                <p style="color: var(--text-secondary); margin: 8px 0 20px;">Use your account email and Student/Staff ID.</p>
+                <div class="login-input-group">
+                    <i class="fas fa-envelope login-input-icon"></i>
+                    <input type="email" id="forgot-email" class="login-input" placeholder="Email Address" required>
+                </div>
+                <div class="login-input-group">
+                    <i class="fas fa-id-card login-input-icon"></i>
+                    <input type="text" id="forgot-id" class="login-input" placeholder="Student/Staff ID" required>
+                </div>
+                <div class="login-input-group">
+                    <i class="fas fa-lock login-input-icon"></i>
+                    <input type="password" id="forgot-new-password" class="login-input" placeholder="New Password" required>
+                </div>
+                <div class="login-input-group">
+                    <i class="fas fa-lock login-input-icon"></i>
+                    <input type="password" id="forgot-confirm-password" class="login-input" placeholder="Confirm New Password" required>
+                </div>
+                <button type="submit" class="login-button">Reset Password</button>
+                <button type="button" onclick="toggleAuth('login')" class="btn btn-outline" style="width: 100%; border-radius: 14px; margin-top: 12px;">Back to Login</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" class="hidden dashboard-layout">
+        <aside class="sidebar">
+            <a href="#" class="logo" style="padding: 0 20px; margin-bottom: 40px;">
+                <i class="fas fa-search-location"></i> <span>EduFind</span>
+            </a>
+            <nav class="sidebar-nav">
+                <a href="#" class="active" data-tab="overview" onclick="showDashboardTab('overview')"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+                <a href="#" data-tab="report" onclick="showDashboardTab('report')"><i class="fas fa-plus-circle"></i> <span>Report Item</span></a>
+                <a href="#" data-tab="items" onclick="showDashboardTab('items')"><i class="fas fa-list"></i> <span>Browse Items</span></a>
+                <a href="#" data-tab="claims" onclick="showDashboardTab('claims')"><i class="fas fa-hand-holding"></i> <span>Claims</span></a>
+                <a href="#" data-tab="transactions" onclick="showDashboardTab('transactions')"><i class="fas fa-history"></i> <span>Transactions</span></a>
+                <a href="#" data-tab="search" onclick="showDashboardTab('search')"><i class="fas fa-search"></i> <span>Search Users</span></a>
+                <a href="#" id="staff-link" class="hidden" data-tab="staff" onclick="showDashboardTab('staff')"><i class="fas fa-user-plus"></i> <span>Create User</span></a>
+                <a href="#" id="admin-link" class="hidden" data-tab="admin" onclick="showDashboardTab('admin')"><i class="fas fa-user-plus"></i> <span>Create User</span></a>
+                <a href="#" data-tab="messages" onclick="showDashboardTab('messages')" style="position: relative;"><i class="fas fa-comments"></i> <span>Messages</span><span id="message-badge" class="notification-badge hidden">0</span></a>
+                <a href="#" data-tab="notifications" onclick="showDashboardTab('notifications')" style="position: relative;"><i class="fas fa-bell"></i> <span>Notifications</span><span id="notification-badge" class="notification-badge hidden">0</span></a>
+                <a href="#" data-tab="profile" onclick="showDashboardTab('profile')"><i class="fas fa-user-circle"></i> <span>Profile</span></a>
+            </nav>
+            <button onclick="logout()" class="btn btn-outline" style="width: 100%; margin-top: auto; border-radius: 18px; padding: 16px;"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header glass-card">
+                <h2 id="tab-title" style="font-size: 1.5rem; font-weight: 700;">Dashboard Overview</h2>
+                <div class="user-info" onclick="showDashboardTab('profile')" style="cursor: pointer;">
+                    <span id="user-display-name" style="font-weight: 600;">User Name</span>
+                    <div class="user-avatar" id="user-avatar">UN</div>
+                </div>
+            </header>
+
+            <div id="dashboard-content">
+                <div id="reportsContainer"></div>
+                <form id="register-user-form">
+
+                    <input type="text" id="reg-fname" placeholder="First Name" required>
+
+                    <input type="text" id="reg-lname" placeholder="Last Name" required>
+
+                    <input type="email" id="reg-email" placeholder="Email" required>
+
+                    <input type="password" id="reg-password" placeholder="Password" required>
+
+                    <input type="text" id="reg-dept" placeholder="Department">
+
+                    <input type="text" id="reg-id" placeholder="Student/Staff ID">
+
+                    <select id="reg-role">
+                        <option value="student">Student</option>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                    </select>
+
+                    <button type="submit">
+                        Register User
+                    </button>
+
+                </form>
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </main>
+    </section>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" style="position: fixed; bottom: 40px; right: 40px; z-index: 3000; display: flex; flex-direction: column; gap: 12px;"></div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
