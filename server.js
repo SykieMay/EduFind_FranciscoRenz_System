@@ -399,7 +399,7 @@ app.put('/api/items/:id/status', authenticateToken, (req, res) => {
         }
 
         db.query(
-            'UPDATE claims SET status = "approved" WHERE itemId = ? AND status = "pending"',
+            "UPDATE claims SET status = 'approved' WHERE itemId = ? AND status = 'pending'",
             [req.params.id],
             (claimErr) => {
                 if (claimErr) return res.status(500).json({ error: claimErr.message });
@@ -417,7 +417,7 @@ app.put('/api/items/:id', authenticateToken, (req, res) => {
     }
 
     db.query(
-        'UPDATE items SET title = ?, description = ?, category = ? WHERE id = ? AND (reporterId = ? OR ? IN ("admin", "staff"))',
+        "UPDATE items SET title = ?, description = ?, category = ? WHERE id = ? AND (reporterId = ? OR ? IN ('admin', 'staff'))",
         [title, description, category, req.params.id, req.user.id, req.user.role],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
@@ -429,7 +429,7 @@ app.put('/api/items/:id', authenticateToken, (req, res) => {
 
 app.delete('/api/items/:id', authenticateToken, (req, res) => {
     db.query(
-        'DELETE FROM items WHERE id = ? AND (reporterId = ? OR ? IN ("admin", "staff"))',
+        "DELETE FROM items WHERE id = ? AND (reporterId = ? OR ? IN ('admin', 'staff'))",
         [req.params.id, req.user.id, req.user.role],
         async (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
@@ -460,7 +460,7 @@ app.post('/api/claims', authenticateToken, (req, res) => {
 
 app.get('/api/claims', authenticateToken, (req, res) => {
     db.query(
-        'UPDATE claims c JOIN items i ON c.itemId = i.id SET c.status = "approved" WHERE c.status = "pending" AND i.status = "claimed"',
+        "UPDATE claims c JOIN items i ON c.itemId = i.id SET c.status = 'approved' WHERE c.status = 'pending' AND i.status = 'claimed'",
         (syncErr) => {
             if (syncErr) return res.status(500).json({ error: syncErr.message });
 
@@ -487,7 +487,7 @@ app.put('/api/claims/:id/status', authenticateToken, (req, res) => {
     }
 
     db.query(
-        'UPDATE claims c JOIN items i ON c.itemId = i.id SET c.status = ?, i.status = CASE WHEN ? = "approved" THEN "claimed" ELSE i.status END WHERE c.id = ? AND (i.reporterId = ? OR ? IN ("admin", "staff"))',
+        "UPDATE claims c JOIN items i ON c.itemId = i.id SET c.status = ?, i.status = CASE WHEN ? = 'approved' THEN 'claimed' ELSE i.status END WHERE c.id = ? AND (i.reporterId = ? OR ? IN ('admin', 'staff'))",
         [status, status, req.params.id, req.user.id, req.user.role],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
