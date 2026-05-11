@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '5mb' }));
 
 // Database Connection
 const dbHost = process.env.DB_HOST;
@@ -367,6 +367,9 @@ app.post('/api/items', authenticateToken, (req, res) => {
     const { title, description, type, status, date, category, image, verificationQuestion, verificationAnswer } = req.body;
     if (!title || !type || !date) {
         return res.status(400).json({ error: 'Title, type, and date are required' });
+    }
+    if (image && image.length > 750000) {
+        return res.status(413).json({ error: 'Image is too large. Please upload a smaller photo.' });
     }
     const query = 'INSERT INTO items (title, description, type, status, date, category, image, verificationQuestion, verificationAnswer, reporterId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     db.query(query, [title, description, type, status || 'pending', date, category, image, verificationQuestion, verificationAnswer, req.user.id], (err, result) => {

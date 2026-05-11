@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS items (
     status ENUM('pending', 'reported', 'claimed', 'found') DEFAULT 'pending',
     date DATE NOT NULL,
     category VARCHAR(50),
-    image LONGTEXT,
+    image MEDIUMTEXT,
     verificationQuestion TEXT,
     verificationAnswer TEXT,
     reporterId INT,

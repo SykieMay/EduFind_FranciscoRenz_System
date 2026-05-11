@@ -160,6 +160,39 @@ document.addEventListener('click', () => {
 
 // Database Management
 const API_URL = window.location.origin;
+const ITEM_IMAGE_MAX_DIMENSION = 900;
+const ITEM_IMAGE_QUALITY = 0.68;
+
+function compressItemImage(file) {
+    return new Promise((resolve, reject) => {
+        if (!file.type.startsWith('image/')) {
+            reject(new Error('Please upload an image file.'));
+            return;
+        }
+
+        const imageUrl = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = () => {
+            const scale = Math.min(ITEM_IMAGE_MAX_DIMENSION / image.width, ITEM_IMAGE_MAX_DIMENSION / image.height, 1);
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+
+            const context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(imageUrl);
+            resolve(canvas.toDataURL('image/jpeg', ITEM_IMAGE_QUALITY));
+        };
+
+        image.onerror = () => {
+            URL.revokeObjectURL(imageUrl);
+            reject(new Error('Could not read image.'));
+        };
+
+        image.src = imageUrl;
+    });
+}
 
 function getToken() {
     return localStorage.getItem('token');
@@ -880,25 +913,17 @@ function renderReportForm() {
     try {
 
         if (file) {
+            newItem.image = await compressItemImage(file);
 
-            const reader = new FileReader();
+            await apiFetch('/api/items', {
+                method: 'POST',
+                body: JSON.stringify(newItem)
+            });
+            await refreshData();
 
-            reader.onload = async (re) => {
+            showToast('Item reported successfully!', 'success');
 
-                newItem.image = re.target.result;
-
-                await apiFetch('/api/items', {
-                    method: 'POST',
-                    body: JSON.stringify(newItem)
-                });
-                await refreshData();
-
-                showToast('Item reported successfully!', 'success');
-
-                showDashboardTab('items');
-            };
-
-            reader.readAsDataURL(file);
+            showDashboardTab('items');
 
         } else {
 
