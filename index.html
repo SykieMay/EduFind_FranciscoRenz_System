@@ -213,6 +213,13 @@
             <a href="#" class="logo" style="padding: 0 20px; margin-bottom: 40px;">
                 <i class="fas fa-search-location"></i> <span>EduFind</span>
             </a>
+            <div class="sidebar-user-summary" id="sidebar-user-summary">
+                <div class="sidebar-user-avatar" id="sidebar-user-avatar">UN</div>
+                <div>
+                    <strong id="sidebar-user-name">User Name</strong>
+                    <span id="sidebar-user-role">Role</span>
+                </div>
+            </div>
             <nav class="sidebar-nav">
                 <a href="#" class="active" data-tab="overview" onclick="showDashboardTab('overview')"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
                 <a href="#" data-tab="report" onclick="showDashboardTab('report')"><i class="fas fa-plus-circle"></i> <span>Report Item</span></a>
@@ -233,7 +240,10 @@
             <header class="dashboard-header glass-card">
                 <h2 id="tab-title" style="font-size: 1.5rem; font-weight: 700;">Dashboard Overview</h2>
                 <div class="user-info" onclick="showDashboardTab('profile')" style="cursor: pointer;">
-                    <span id="user-display-name" style="font-weight: 600;">User Name</span>
+                    <div class="user-meta">
+                        <span id="user-display-name" style="font-weight: 600;">User Name</span>
+                        <small id="user-role-label">Role</small>
+                    </div>
                     <div class="user-avatar" id="user-avatar">UN</div>
                 </div>
             </header>

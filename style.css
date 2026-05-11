@@ -860,6 +860,50 @@ select.glass-input.enhanced-select option {
     box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.16);
 }
 
+.sidebar-user-summary {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin: -20px 0 24px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-user-avatar {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #22c55e, #2563eb);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 900;
+}
+
+.sidebar-user-summary strong,
+.sidebar-user-summary span {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-user-summary strong {
+    color: #f8fafc;
+    font-size: 0.9rem;
+}
+
+.sidebar-user-summary span {
+    color: #9fb0c8;
+    font-size: 0.76rem;
+    margin-top: 3px;
+}
+
 .sidebar-nav {
     display: flex;
     flex-direction: column;
@@ -993,6 +1037,21 @@ select.glass-input.enhanced-select option {
     white-space: nowrap;
 }
 
+.user-meta {
+    min-width: 0;
+}
+
+.user-meta small {
+    display: block;
+    max-width: 250px;
+    margin-top: 2px;
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .user-avatar {
     width: 38px;
     height: 38px;
@@ -1089,6 +1148,24 @@ select.glass-input.enhanced-select option {
         rgba(30, 41, 59, 0.5);
 }
 
+.overview-hero.role-admin {
+    background:
+        linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(99, 102, 241, 0.1)),
+        rgba(30, 41, 59, 0.5);
+}
+
+.overview-hero.role-staff {
+    background:
+        linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(245, 158, 11, 0.1)),
+        rgba(30, 41, 59, 0.5);
+}
+
+.overview-hero.role-student {
+    background:
+        linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(16, 185, 129, 0.1)),
+        rgba(30, 41, 59, 0.5);
+}
+
 .overview-hero::after {
     content: "";
     position: absolute;
@@ -1173,6 +1250,73 @@ select.glass-input.enhanced-select option {
 
 .overview-metrics {
     margin-bottom: 0;
+}
+
+.role-focus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.role-focus-card {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    min-height: 112px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.64);
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.role-focus-card:hover,
+.role-focus-card:focus-visible {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(34, 197, 94, 0.34);
+    outline: none;
+}
+
+.role-focus-card i {
+    grid-row: span 3;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    color: var(--accent);
+    background: rgba(16, 185, 129, 0.12);
+}
+
+.role-focus-card span,
+.role-focus-card small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.role-focus-card span {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.role-focus-card strong {
+    color: white;
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.role-focus-card small {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
 }
 
 .dashboard-metric {
@@ -1328,6 +1472,48 @@ select.glass-input.enhanced-select option {
 .overview-empty {
     color: var(--text-secondary);
     padding: 18px 0;
+}
+
+.role-tips-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.role-tip {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.role-tip i {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.11);
+}
+
+.role-tip strong,
+.role-tip span {
+    display: block;
+}
+
+.role-tip strong {
+    color: #f8fafc;
+    margin-bottom: 5px;
+}
+
+.role-tip span {
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.45;
 }
 
 /* ===== DASHBOARD FORM SURFACES ===== */
@@ -1522,7 +1708,7 @@ select.glass-input.enhanced-select option {
 /* RESPONSIVE */
 @media (max-width: 1024px) {
     .sidebar { width: 92px; padding: 28px 14px; }
-    .sidebar span, .sidebar .logo span { display: none; }
+    .sidebar span, .sidebar .logo span, .sidebar-user-summary { display: none; }
     .sidebar .logo { padding: 0 !important; justify-content: center; }
     .sidebar .logo i { margin: 0; }
     .sidebar-nav a {
@@ -1542,6 +1728,8 @@ select.glass-input.enhanced-select option {
     }
     .overview-hero,
     .overview-grid,
+    .role-focus-grid,
+    .role-tips-strip,
     .form-workspace {
         grid-template-columns: 1fr;
     }

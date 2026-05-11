@@ -528,14 +528,31 @@ function updateUserHeader() {
     const user = DB.getCurrentUser();
     // const users = DB.get('users');
     const dbUser = users.find(u => u.id === user.id) || user;
+    const fullName = `${dbUser.firstName || ''} ${dbUser.lastName || ''}`.trim() || 'EduFind User';
+    const initials = `${dbUser.firstName?.[0] || 'U'}${dbUser.lastName?.[0] || 'N'}`.toUpperCase();
+    const roleLabel = (dbUser.role || 'student').replace(/\b\w/g, letter => letter.toUpperCase());
+    const institutionId = dbUser.studentId || dbUser.staffId || dbUser.department || 'EduFind account';
     
-    document.getElementById('user-display-name').textContent = `${dbUser.firstName} ${dbUser.lastName}`;
+    document.getElementById('user-display-name').textContent = fullName;
+    const roleEl = document.getElementById('user-role-label');
+    if (roleEl) roleEl.textContent = `${roleLabel} - ${institutionId}`;
+
     const avatarEl = document.getElementById('user-avatar');
+    const sidebarAvatarEl = document.getElementById('sidebar-user-avatar');
     if (dbUser.profilePicture) {
         avatarEl.innerHTML = `<img src="${dbUser.profilePicture}" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">`;
+        if (sidebarAvatarEl) {
+            sidebarAvatarEl.innerHTML = `<img src="${dbUser.profilePicture}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">`;
+        }
     } else {
-        avatarEl.textContent = (dbUser.firstName[0] + dbUser.lastName[0]).toUpperCase();
+        avatarEl.textContent = initials;
+        if (sidebarAvatarEl) sidebarAvatarEl.textContent = initials;
     }
+
+    const sidebarNameEl = document.getElementById('sidebar-user-name');
+    const sidebarRoleEl = document.getElementById('sidebar-user-role');
+    if (sidebarNameEl) sidebarNameEl.textContent = fullName;
+    if (sidebarRoleEl) sidebarRoleEl.textContent = `${roleLabel} - ${institutionId}`;
 }
 
 window.showDashboardTab = async function(tab) {
@@ -582,28 +599,91 @@ function getRoleDashboardConfig(user, counts) {
             title: `Welcome back, ${user.firstName}.`,
             summary: `There are ${counts.pendingClaims} pending claims, ${counts.pendingItems} active item reports, and ${counts.totalUsers} registered users in EduFind.`,
             icon: 'fa-user-shield',
+            tone: 'admin',
             primaryAction: { label: 'Create User', tab: 'admin', icon: 'fa-user-plus' },
-            secondaryAction: { label: 'Review Claims', tab: 'claims', icon: 'fa-clipboard-check' }
+            secondaryAction: { label: 'Review Claims', tab: 'claims', icon: 'fa-clipboard-check' },
+            focus: [
+                { label: 'Account coverage', value: counts.totalUsers, helper: 'registered users', icon: 'fa-users', tab: 'search' },
+                { label: 'Approval queue', value: counts.pendingClaims, helper: 'claims need review', icon: 'fa-file-signature', tab: 'claims' },
+                { label: 'System pulse', value: counts.pendingItems, helper: 'active reports', icon: 'fa-wave-square', tab: 'items' }
+            ]
         },
         staff: {
             eyebrow: 'Staff workspace',
             title: `Good day, ${user.firstName}.`,
             summary: `Focus on ${counts.pendingClaims} pending claims, ${counts.pendingItems} open reports, and ${counts.unreadCount} unread notifications.`,
             icon: 'fa-clipboard-list',
+            tone: 'staff',
             primaryAction: { label: 'Create Student', tab: 'staff', icon: 'fa-user-plus' },
-            secondaryAction: { label: 'Browse Items', tab: 'items', icon: 'fa-list' }
+            secondaryAction: { label: 'Browse Items', tab: 'items', icon: 'fa-list' },
+            focus: [
+                { label: 'Today priority', value: counts.pendingClaims, helper: 'claim reviews', icon: 'fa-clipboard-check', tab: 'claims' },
+                { label: 'Found inventory', value: counts.foundCount, helper: 'items to match', icon: 'fa-box-open', tab: 'items' },
+                { label: 'My reports', value: counts.myItems, helper: 'items you logged', icon: 'fa-id-card', tab: 'items' }
+            ]
         },
         student: {
             eyebrow: 'Student dashboard',
             title: `Hi, ${user.firstName}.`,
             summary: `You have ${counts.myItems} item reports, ${counts.myClaims} submitted claims, and ${counts.unreadCount} unread notifications.`,
             icon: 'fa-graduation-cap',
+            tone: 'student',
             primaryAction: { label: 'Report Item', tab: 'report', icon: 'fa-plus-circle' },
-            secondaryAction: { label: 'Browse Items', tab: 'items', icon: 'fa-search' }
+            secondaryAction: { label: 'Browse Items', tab: 'items', icon: 'fa-search' },
+            focus: [
+                { label: 'My reports', value: counts.myItems, helper: 'items posted', icon: 'fa-clipboard-list', tab: 'items' },
+                { label: 'Claim progress', value: counts.myClaims, helper: 'submitted claims', icon: 'fa-hand-holding', tab: 'claims' },
+                { label: 'Updates', value: counts.unreadCount, helper: 'notifications', icon: 'fa-bell', tab: 'notifications' }
+            ]
         }
     };
 
     return configs[role] || configs.student;
+}
+
+function getRoleTips(role) {
+    const tips = {
+        admin: [
+            { title: 'Verify access', text: 'Create staff and student accounts before the next reporting cycle.', icon: 'fa-user-check' },
+            { title: 'Audit queues', text: 'Review pending reports and claims before they pile up.', icon: 'fa-list-check' },
+            { title: 'Keep records clean', text: 'Use transactions to trace major recoveries and status changes.', icon: 'fa-clock-rotate-left' }
+        ],
+        staff: [
+            { title: 'Match details', text: 'Compare item descriptions, dates, and verification answers.', icon: 'fa-scale-balanced' },
+            { title: 'Respond fast', text: 'Unread messages and notifications are surfaced here for quick follow-up.', icon: 'fa-reply' },
+            { title: 'Log found items', text: 'Add clear photos and verification questions for owner-only details.', icon: 'fa-camera-retro' }
+        ],
+        student: [
+            { title: 'Report clearly', text: 'Add unique marks, location, time, and a compressed photo when possible.', icon: 'fa-pen-nib' },
+            { title: 'Track claims', text: 'Check your claims tab for approval or rejection updates.', icon: 'fa-route' },
+            { title: 'Stay reachable', text: 'Use messages when staff or finders need more details.', icon: 'fa-comments' }
+        ]
+    };
+
+    return tips[role] || tips.student;
+}
+
+function renderRoleFocusCard(card) {
+    return `
+        <button class="role-focus-card" onclick="showDashboardTab('${card.tab}')">
+            <i class="fas ${card.icon}"></i>
+            <span>${card.label}</span>
+            <strong>${card.value}</strong>
+            <small>${card.helper}</small>
+        </button>
+    `;
+}
+
+function renderRoleTip(tip) {
+    return `
+        <div class="role-tip">
+            <i class="fas ${tip.icon}"></i>
+            <div>
+                <strong>${tip.title}</strong>
+                <span>${tip.text}</span>
+            </div>
+        </div>
+    `;
 }
 
 function renderOverviewMetricCard(metric) {
@@ -686,10 +766,12 @@ function renderOverview() {
         pendingItems: pendingItems.length,
         myItems: myItems.length,
         myClaims: myClaims.length,
-        unreadCount
+        unreadCount,
+        foundCount
     };
     const config = getRoleDashboardConfig(user, counts);
     const role = user.role || 'student';
+    const roleTips = getRoleTips(role);
     const visibleItems = role === 'student'
         ? items.filter(item => item.reporterId === user.id || myClaims.some(claim => claim.itemId === item.id))
         : items;
@@ -720,7 +802,7 @@ function renderOverview() {
 
     document.getElementById('dashboard-content').innerHTML = `
         <section class="dashboard-overview">
-            <div class="overview-hero glass-card">
+            <div class="overview-hero glass-card role-${config.tone}">
                 <div class="overview-hero-copy">
                     <span class="overview-eyebrow">${config.eyebrow}</span>
                     <h2>${config.title}</h2>
@@ -735,6 +817,10 @@ function renderOverview() {
                     <strong>${role.toUpperCase()}</strong>
                     <span>${user.department || user.studentId || user.staffId || 'EduFind account'}</span>
                 </div>
+            </div>
+
+            <div class="role-focus-grid">
+                ${config.focus.map(renderRoleFocusCard).join('')}
             </div>
 
             <div class="stats-grid overview-metrics">
@@ -767,6 +853,10 @@ function renderOverview() {
                         ${recentClaims.length ? recentClaims.map(renderOverviewClaimRow).join('') : '<p class="overview-empty">No claims to show.</p>'}
                     </div>
                 </div>
+            </div>
+
+            <div class="role-tips-strip">
+                ${roleTips.map(renderRoleTip).join('')}
             </div>
         </section>
     `;
@@ -2506,6 +2596,7 @@ async function showDashboard() {
     try {
         await refreshData();
         updateUserHeader();
+        updateManagementLinks();
         updateNotificationBadge();
         updateMessageBadge();
     } catch (error) {
