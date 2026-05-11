@@ -13,12 +13,17 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 
 // Database Connection
+const dbHost = process.env.DB_HOST;
+const shouldUseSsl = process.env.DB_SSL === 'true' || dbHost?.includes('aivencloud.com');
+
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
+    host: dbHost,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD || process.env.DB_PASS,
     database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT) || 3306
+    port: Number(process.env.DB_PORT) || 3306,
+    connectTimeout: 10000,
+    ...(shouldUseSsl ? { ssl: { rejectUnauthorized: false } } : {})
 });
 
 db.connect((err) => {
