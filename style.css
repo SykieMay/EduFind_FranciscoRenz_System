@@ -1767,6 +1767,12 @@ select.glass-input.enhanced-select option {
 }
 
 @media (max-width: 768px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     #navbar { padding: 20px 5%; }
     .nav-links { display: none; }
     .hero {
@@ -1821,35 +1827,234 @@ select.glass-input.enhanced-select option {
         align-items: flex-start;
         flex-direction: column;
     }
-    .overview-hero {
-        padding: 26px;
-    }
-    .overview-hero-panel {
-        min-height: auto;
-    }
-    .overview-actions .btn {
-        flex: 1 1 180px;
-    }
-    .overview-list-row {
-        grid-template-columns: 40px minmax(0, 1fr);
-    }
-    .overview-list-row .status-badge {
-        grid-column: 2;
-        justify-self: start;
-    }
-    .dashboard-layout {
-        height: 100vh;
-    }
-    .dashboard-header {
+
+    .login-container {
+        min-height: 100svh;
+        padding: 24px 18px;
         align-items: flex-start;
-        flex-direction: column;
+        overflow-y: auto;
     }
+
+    .login-card {
+        width: 100%;
+        max-width: 430px;
+        margin: 24px auto;
+        padding: 32px 22px;
+    }
+
+    .login-logo {
+        font-size: 1.8rem;
+    }
+
+    .login-title {
+        font-size: 1.75rem;
+    }
+
+    .dashboard-layout {
+        display: block;
+        min-height: 100svh;
+        height: auto;
+        padding-bottom: 84px;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 80;
+        width: 100%;
+        height: 78px;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        background: rgba(8, 13, 26, 0.96);
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+        border-right: 0;
+        box-shadow: 0 -18px 38px rgba(0, 0, 0, 0.34);
+    }
+
+    .sidebar .logo,
+    .sidebar-user-summary {
+        display: none !important;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        flex-direction: row;
+        gap: 6px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0 2px 4px 0;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        height: 0;
+    }
+
+    .sidebar-nav a {
+        flex: 0 0 74px;
+        min-height: 58px;
+        padding: 7px 8px;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+        border-radius: 8px;
+        scroll-snap-align: start;
+    }
+
+    .sidebar-nav a i {
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+    }
+
+    .sidebar .sidebar-nav a span:not(.notification-badge) {
+        display: block;
+        max-width: 62px;
+        color: inherit;
+        font-size: 0.64rem;
+        line-height: 1.05;
+        text-align: center;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 5px;
+        right: 8px;
+        margin-left: 0;
+        padding: 1px 5px;
+        font-size: 0.62rem;
+    }
+
+    .sidebar > .btn {
+        flex: 0 0 50px;
+        width: 50px !important;
+        min-height: 58px;
+        height: 58px;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
+    }
+
+    .sidebar > .btn i {
+        margin: 0;
+    }
+
+    .dashboard-main {
+        min-height: 100svh;
+        padding: 18px 14px 104px;
+    }
+
+    .dashboard-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+        margin: -2px 0 18px;
+        backdrop-filter: blur(18px);
+    }
+
+    .dashboard-header h2 {
+        font-size: 1.12rem !important;
+        line-height: 1.2;
+    }
+
     .user-info {
         max-width: 100%;
         width: 100%;
         justify-content: space-between;
+        padding: 8px 8px 8px 12px;
     }
-    .dashboard-main { padding: 24px 20px; }
+
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .user-meta small {
+        max-width: calc(100vw - 110px);
+    }
+
+    .overview-hero {
+        padding: 22px;
+        gap: 18px;
+    }
+
+    .overview-hero h2 {
+        font-size: 2rem;
+        line-height: 1.08;
+    }
+
+    .overview-hero p {
+        font-size: 0.94rem;
+    }
+
+    .overview-hero-panel {
+        min-height: auto;
+        padding: 18px;
+    }
+
+    .overview-actions .btn {
+        flex: 1 1 180px;
+        min-height: 48px;
+    }
+
+    .role-focus-grid,
+    .role-tips-strip,
+    .overview-grid,
+    .overview-metrics {
+        gap: 14px;
+    }
+
+    .role-focus-card {
+        min-height: 96px;
+        padding: 14px;
+    }
+
+    .role-tip {
+        padding: 14px;
+    }
+
+    .overview-list-row {
+        grid-template-columns: 40px minmax(0, 1fr);
+        padding: 12px;
+    }
+
+    .overview-list-row .status-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .form-workspace {
+        width: 100%;
+        gap: 14px;
+    }
+
+    .form-intro-panel,
+    .form-main-card {
+        padding: 20px !important;
+    }
+
+    .form-section-title {
+        grid-template-columns: minmax(0, 1fr) 42px;
+        gap: 12px;
+    }
+
+    .login-input,
+    .glass-input,
+    .search-input {
+        min-height: 48px;
+        font-size: 0.95rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1863,18 +2068,31 @@ select.glass-input.enhanced-select option {
     }
 
     .dashboard-main {
-        padding: 20px 14px;
+        padding: 14px 10px 104px;
     }
 
     .overview-hero,
     .overview-panel {
-        padding: 20px;
+        padding: 16px;
+    }
+
+    .overview-hero h2 {
+        font-size: 1.75rem;
+    }
+
+    .overview-actions {
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .overview-actions .btn {
+        flex-basis: 100%;
     }
 
     .dashboard-metric {
         grid-template-columns: 46px minmax(0, 1fr);
         min-height: 128px;
-        padding: 20px;
+        padding: 16px;
     }
 
     .metric-icon {
@@ -1884,7 +2102,7 @@ select.glass-input.enhanced-select option {
 
     .browse-summary,
     .browse-toolbar {
-        padding: 20px;
+        padding: 16px;
     }
 
     .browse-summary-stats {
@@ -1940,7 +2158,29 @@ select.glass-input.enhanced-select option {
 
     .form-main-card,
     .form-intro-panel {
-        padding: 20px;
+        padding: 16px !important;
+    }
+
+    .sidebar-nav a {
+        flex-basis: 68px;
+    }
+
+    .sidebar .sidebar-nav a span:not(.notification-badge) {
+        max-width: 58px;
+        font-size: 0.6rem;
+    }
+
+    .sidebar > .btn {
+        flex-basis: 46px;
+        width: 46px !important;
+    }
+
+    .dashboard-header {
+        padding: 12px;
+    }
+
+    .role-focus-card strong {
+        font-size: 1.5rem;
     }
 }
 
@@ -3256,4 +3496,92 @@ select.glass-input.enhanced-select option {
 .user-row:hover td {
     background: rgba(255, 255, 255, 0.04);
     border-color: var(--glass-border-hover);
+}
+
+@media (max-width: 768px) {
+    .chat-layout {
+        flex-direction: column;
+        gap: 14px;
+        height: auto;
+        min-height: 0;
+    }
+
+    .chat-sidebar,
+    .chat-main {
+        width: 100%;
+        min-height: 0;
+    }
+
+    .chat-sidebar {
+        max-height: 280px;
+    }
+
+    .chat-main {
+        min-height: 480px;
+    }
+
+    .chat-messages {
+        min-height: 340px;
+        padding: 16px;
+    }
+
+    .message {
+        max-width: 86%;
+        padding: 11px 13px;
+        font-size: 0.9rem;
+    }
+
+    .chat-input-area {
+        padding: 14px;
+        gap: 8px;
+    }
+
+    .chat-input-area .btn-icon {
+        flex: 0 0 42px;
+    }
+
+    .custom-table,
+    .custom-table thead,
+    .custom-table tbody,
+    .custom-table tr,
+    .custom-table td,
+    .custom-table th {
+        display: block;
+    }
+
+    .custom-table thead {
+        display: none;
+    }
+
+    .custom-table tbody tr {
+        margin-bottom: 12px;
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.035);
+    }
+
+    .custom-table tbody tr td {
+        border: 0;
+        border-radius: 0 !important;
+        padding: 12px 14px;
+        background: transparent;
+        overflow-wrap: anywhere;
+    }
+
+    .modal-content {
+        padding: 24px;
+        border-radius: 12px;
+    }
+
+    #toast-container {
+        left: 12px;
+        right: 12px;
+        bottom: 96px;
+    }
+
+    .toast {
+        width: 100%;
+        padding: 14px 16px;
+    }
 }
