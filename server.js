@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -49,6 +50,106 @@ const authenticateToken = (req, res, next) => {
 
 const canManage = (user) => user && (user.role === 'admin' || user.role === 'staff');
 const dbp = db.promise();
+const appUrl = process.env.APP_URL || `http://localhost:${port}`;
+
+const mailTransporter = process.env.SMTP_HOST
+    ? nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: process.env.SMTP_USER && process.env.SMTP_PASSWORD
+            ? {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD
+            }
+            : undefined
+    })
+    : null;
+
+function escapeHtml(value = '') {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+async function sendEmail({ to, subject, text, html }) {
+    if (!mailTransporter || !to) return;
+
+    try {
+        await mailTransporter.sendMail({
+            from: process.env.SMTP_FROM || process.env.SMTP_USER,
+            to,
+            subject,
+            text,
+            html
+        });
+    } catch (err) {
+        console.error('Email send failed:', err.message);
+    }
+}
+
+function sendPasswordResetEmail(user) {
+    return sendEmail({
+        to: user.email,
+        subject: 'Your EduFind password was reset',
+        text: `Hi ${user.firstName}, your EduFind password was reset. If this was not you, contact your institution staff immediately. ${appUrl}`,
+        html: `
+            <p>Hi ${escapeHtml(user.firstName)},</p>
+            <p>Your EduFind password was reset successfully.</p>
+            <p>If this was not you, contact your institution staff immediately.</p>
+            <p><a href="${escapeHtml(appUrl)}">Open EduFind</a></p>
+        `
+    });
+}
+
+function sendNewAccountEmail(user, temporaryPassword) {
+    const accountId = user.studentId || user.staffId || 'Use your registered email';
+    return sendEmail({
+        to: user.email,
+        subject: 'Your EduFind account is ready',
+        text: `Hi ${user.firstName}, your EduFind ${user.role} account was created. Email: ${user.email}. Temporary password: ${temporaryPassword}. Account ID: ${accountId}. Sign in: ${appUrl}`,
+        html: `
+            <p>Hi ${escapeHtml(user.firstName)},</p>
+            <p>Your EduFind <strong>${escapeHtml(user.role)}</strong> account was created.</p>
+            <p><strong>Email:</strong> ${escapeHtml(user.email)}<br>
+            <strong>Temporary password:</strong> ${escapeHtml(temporaryPassword)}<br>
+            <strong>Account ID:</strong> ${escapeHtml(accountId)}</p>
+            <p>Please sign in and change your password when possible.</p>
+            <p><a href="${escapeHtml(appUrl)}">Open EduFind</a></p>
+        `
+    });
+}
+
+function sendClaimApprovedEmail({ claimer, item }) {
+    return sendEmail({
+        to: claimer.email,
+        subject: `EduFind claim approved: ${item.title}`,
+        text: `Hi ${claimer.firstName}, your claim for "${item.title}" was approved. Please coordinate through EduFind. ${appUrl}`,
+        html: `
+            <p>Hi ${escapeHtml(claimer.firstName)},</p>
+            <p>Your claim for <strong>${escapeHtml(item.title)}</strong> was approved.</p>
+            <p>Please coordinate through EduFind for the next steps.</p>
+            <p><a href="${escapeHtml(appUrl)}">Open EduFind</a></p>
+        `
+    });
+}
+
+function sendMessageNotificationEmail({ receiver, sender, messageText }) {
+    return sendEmail({
+        to: receiver.email,
+        subject: `New EduFind message from ${sender.firstName} ${sender.lastName}`,
+        text: `Hi ${receiver.firstName}, you have a new EduFind message from ${sender.firstName} ${sender.lastName}: "${messageText}". Reply in EduFind: ${appUrl}`,
+        html: `
+            <p>Hi ${escapeHtml(receiver.firstName)},</p>
+            <p>You have a new EduFind message from <strong>${escapeHtml(sender.firstName)} ${escapeHtml(sender.lastName)}</strong>.</p>
+            <blockquote>${escapeHtml(messageText)}</blockquote>
+            <p><a href="${escapeHtml(appUrl)}">Open EduFind</a></p>
+        `
+    });
+}
 
 app.get('/api/health', (req, res) => {
     res.json({ ok: true, service: 'edufind' });
@@ -167,17 +268,19 @@ app.post('/api/forgot-password', (req, res) => {
     }
 
     db.query(
-        'SELECT id FROM users WHERE email = ? AND (studentId = ? OR staffId = ?)',
+        'SELECT id, firstName, lastName, email FROM users WHERE email = ? AND (studentId = ? OR staffId = ?)',
         [email, institutionId, institutionId],
         (err, results) => {
             if (err) return res.status(500).json({ error: err.message });
             if (results.length === 0) return res.status(404).json({ error: 'No matching account found' });
 
+            const user = results[0];
             db.query(
                 'UPDATE users SET password = ? WHERE id = ?',
-                [newPassword, results[0].id],
+                [newPassword, user.id],
                 (updateErr) => {
                     if (updateErr) return res.status(500).json({ error: updateErr.message });
+                    sendPasswordResetEmail(user);
                     res.json({ message: 'Password reset successfully' });
                 }
             );
@@ -256,6 +359,7 @@ app.post('/api/users', authenticateToken, (req, res) => {
                 [result.insertId],
                 (selectErr, results) => {
                     if (selectErr) return res.status(500).json({ error: selectErr.message });
+                    sendNewAccountEmail(results[0], password);
                     res.status(201).json({ success: true, user: results[0] });
                 }
             );
@@ -321,7 +425,7 @@ app.put('/api/users/:id', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'First name, last name, and email are required' });
     }
 
-    const ownershipClause = req.user.role === 'staff' ? ' AND role = "student"' : '';
+    const ownershipClause = req.user.role === 'staff' ? " AND role = 'student'" : '';
     db.query(
         `UPDATE users SET firstName = ?, middleInitial = ?, lastName = ?, email = ?, department = ? WHERE id = ?${ownershipClause}`,
         [firstName, middleInitial || null, lastName, email, department || null, req.params.id],
@@ -341,7 +445,7 @@ app.delete('/api/users/:id', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'You cannot delete your own account' });
     }
 
-    const ownershipClause = req.user.role === 'staff' ? ' AND role = "student"' : '';
+    const ownershipClause = req.user.role === 'staff' ? " AND role = 'student'" : '';
     db.query(`DELETE FROM users WHERE id = ?${ownershipClause}`, [req.params.id], async (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.affectedRows === 0) return res.status(404).json({ error: 'User not found or not allowed' });
@@ -495,6 +599,27 @@ app.put('/api/claims/:id/status', authenticateToken, (req, res) => {
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
             if (result.affectedRows === 0) return res.status(404).json({ error: 'Claim not found or not allowed' });
+
+            if (status === 'approved') {
+                db.query(
+                    `SELECT c.id, i.title, u.firstName, u.lastName, u.email
+                     FROM claims c
+                     JOIN items i ON c.itemId = i.id
+                     JOIN users u ON c.claimerId = u.id
+                     WHERE c.id = ?`,
+                    [req.params.id],
+                    (selectErr, rows) => {
+                        if (selectErr) return console.error('Claim email lookup failed:', selectErr.message);
+                        if (!rows.length) return;
+
+                        sendClaimApprovedEmail({
+                            claimer: rows[0],
+                            item: { title: rows[0].title }
+                        });
+                    }
+                );
+            }
+
             res.json({ message: 'Claim status updated' });
         }
     );
@@ -541,16 +666,31 @@ app.post('/api/messages', authenticateToken, (req, res) => {
     }
 
     const timestamp = Date.now();
+    const messageText = String(text).trim();
     db.query(
         'INSERT INTO messages (senderId, receiverId, text, timestamp, `read`) VALUES (?, ?, ?, ?, FALSE)',
-        [req.user.id, receiverId, String(text).trim(), timestamp],
+        [req.user.id, receiverId, messageText, timestamp],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
+
+            db.query(
+                'SELECT id, firstName, lastName, email FROM users WHERE id IN (?, ?)',
+                [req.user.id, receiverId],
+                (selectErr, rows) => {
+                    if (selectErr) return console.error('Message email lookup failed:', selectErr.message);
+                    const sender = rows.find(user => user.id === req.user.id);
+                    const receiver = rows.find(user => user.id === Number(receiverId));
+                    if (sender && receiver) {
+                        sendMessageNotificationEmail({ receiver, sender, messageText });
+                    }
+                }
+            );
+
             res.status(201).json({
                 id: result.insertId,
                 senderId: req.user.id,
                 receiverId,
-                text: String(text).trim(),
+                text: messageText,
                 timestamp,
                 read: false
             });
